@@ -6,6 +6,7 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../Axios/axios-orders";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 // Global constants
 const INGREDIENT_PRICES = {
@@ -26,6 +27,7 @@ const BurgerBuilder = () => {
   const [totalPrice, setTotalPrice] = useState(4);
   const [purchaseable, setPurchaseable] = useState(false);
   const [purchaseMode, setPurchaseMode] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Methods
   const updatePurchaseState = (updatedIngredients) => {
@@ -91,6 +93,8 @@ const BurgerBuilder = () => {
   };
   const purchaseContinueHandler = () => {
     // Send burger order data to back-end
+    setLoading(true);
+
     const order = {
       ingredients: ingredients,
       price: totalPrice, // Would not do this in real world, calculate cost in back-end instead.
@@ -109,8 +113,8 @@ const BurgerBuilder = () => {
 
     axios
       .post("/orders.json", order)
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
+      .then(setLoading(false))
+      .catch(setLoading(false));
   };
 
   const disabledInfo = {
@@ -120,16 +124,24 @@ const BurgerBuilder = () => {
     disabledInfo[key] = disabledInfo[key] <= 0;
   }
 
+  let orderSummary = (
+    <OrderSummary
+      ingredients={ingredients}
+      price={totalPrice}
+      purchaseCancelled={purchaseCancelHandler}
+      purchaseContinued={purchaseContinueHandler}
+    />
+  );
+
+  if (loading) {
+    orderSummary = <Spinner />;
+  }
+
   // JSX return
   return (
     <Aux>
       <Modal show={purchaseMode} modalClosed={purchaseCancelHandler}>
-        <OrderSummary
-          ingredients={ingredients}
-          price={totalPrice}
-          purchaseCancelled={purchaseCancelHandler}
-          purchaseContinued={purchaseContinueHandler}
-        />
+        {orderSummary}
       </Modal>
       <Burger ingredients={ingredients} />
       <BuildControls
