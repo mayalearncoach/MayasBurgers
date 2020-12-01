@@ -7,7 +7,7 @@
     left: 0;
     background-color: #ffc400;
     display: flex;
-    justify-content: space-between;
+    justify-content: left;
     align-items: center;
     padding: 0 20px;
     box-sizing: border-box;
@@ -25,6 +25,7 @@
 @media (max-width: 499px) {
     .HamburgerBars {
         display: initial;
+        padding-right: 30px;
     }
 
     .DesktopOnly {

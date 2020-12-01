@@ -113,8 +113,8 @@ const BurgerBuilder = () => {
 
     axios
       .post("/orders.json", order)
-      .then(setLoading(false))
-      .catch(setLoading(false));
+      .then(setLoading(false), setPurchaseable(false))
+      .catch(setLoading(false), setPurchaseable(false));
   };
 
   const disabledInfo = {
