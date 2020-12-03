@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import CounterControl from "../../components/CounterControl/CounterControl";
 import CounterOutput from "../../components/CounterOutput/CounterOutput";
@@ -45,30 +46,67 @@ class Counter extends Component {
   render() {
     return (
       <div className={classes.Counter}>
-        <CounterOutput value={this.state.counter} />
+        <CounterOutput value={this.props.ctr} />
         <CounterControl
           label="Increment"
-          clicked={() => this.counterChangedHandler("inc")}
+          clicked={this.props.onCounterIncrement}
         />
         <CounterControl
           label="Decrement"
-          clicked={() => this.counterChangedHandler("dec")}
+          clicked={this.props.onCounterDecrement}
         />
-        <CounterControl
-          label="Add 5"
-          clicked={() => this.counterChangedHandler("add", 5)}
-        />
+        <CounterControl label="Add 5" clicked={this.props.onCounterAddFive} />
         <CounterControl
           label="Subtract 5"
-          clicked={() => this.counterChangedHandler("sub", 5)}
+          clicked={this.props.onCounterSubFive}
         />
-        <CounterControl
-          label="Set to 0"
-          clicked={() => this.counterChangedHandler("zero")}
-        />
+        <CounterControl label="Set to 0" clicked={this.props.onCounterZero} />
+        <hr />
+        <button>Store Result</button>
+        <ul>
+          <li></li>
+        </ul>
       </div>
     );
   }
 }
 
-export default Counter;
+// Instructions on how the state, managed by Redux, should
+// be mapped to the props of this component/container.
+const mapStateToProps = (state) => {
+  return {
+    ctr: state.counter,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onCounterIncrement: () =>
+      dispatch({
+        type: "INCREMENT",
+        value: 1,
+      }),
+    onCounterDecrement: () =>
+      dispatch({
+        type: "DECREMENT",
+        value: 1,
+      }),
+    onCounterAddFive: () =>
+      dispatch({
+        type: "ADD_FIVE",
+        value: 5,
+      }),
+    onCounterSubFive: () =>
+      dispatch({
+        type: "SUB_FIVE",
+        value: 5,
+      }),
+    onCounterZero: () =>
+      dispatch({
+        type: "ZERO",
+        value: 0,
+      }),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Counter);
