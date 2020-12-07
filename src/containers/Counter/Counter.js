@@ -9,6 +9,7 @@ import classes from "./Counter.css";
 class Counter extends Component {
   state = {
     counter: 0,
+    results: [],
   };
 
   counterChangedHandler = (action, value) => {
@@ -62,10 +63,16 @@ class Counter extends Component {
         />
         <CounterControl label="Set to 0" clicked={this.props.onCounterZero} />
         <hr />
-        <button>Store Result</button>
+        <button onClick={this.props.onStoreResult}>Store Result</button>
+        <h3>Stored Results:</h3>
         <ul>
-          <li></li>
+          {this.props.storedResults.map((result) => (
+            <li key={result.id} onClick={this.props.onDeleteResult}>
+              {result}
+            </li>
+          ))}
         </ul>
+        <hr />
       </div>
     );
   }
@@ -76,6 +83,7 @@ class Counter extends Component {
 const mapStateToProps = (state) => {
   return {
     ctr: state.counter,
+    storedResults: state.results,
   };
 };
 
@@ -105,6 +113,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: "ZERO",
         value: 0,
+      }),
+    onStoreResult: () =>
+      dispatch({
+        type: "STORE_RESULT",
+      }),
+    onDeleteResult: () =>
+      dispatch({
+        type: "DELETE_RESULT",
       }),
   };
 };
